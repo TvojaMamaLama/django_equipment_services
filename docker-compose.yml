@@ -1,0 +1,27 @@
+version: "3"
+services: 
+    db:
+        image: postgres
+        container_name: session_postgres
+        ports: 
+            - 5433:5432
+        environment: 
+            - POSTGRESQL_DB_HOST=host.docker.internal
+            - POSTGRES_USER=test
+            - POSTGRES_PASSWORD=test
+            - POSTGRES_DB=test
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        # volumes: 
+        #     - ./pg_data/session_db:/var/lib/postgresql/data/pgdata
+        restart: always
+
+    session_service:
+        build: ./session_service
+        ports: 
+            - 8001:8001
+        environment: 
+            - PORT=8001
+        depends_on: 
+            - db
+        links: 
+            - db:db
